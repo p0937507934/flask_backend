@@ -1,0 +1,24 @@
+{
+    "skip": {
+        "tag": true,
+        "commit": true
+    },
+    "types": [
+        {
+            "type":"feat",
+            "section":"Features"
+        },
+        {
+            "type":"test",
+            "section":"Tests"
+        },
+        {
+            "type":"build",
+            "section":"Build System"
+        },
+        {
+            "type":"ci",
+            "section":"CI"
+        }
+    ]
+}
