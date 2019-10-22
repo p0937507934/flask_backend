@@ -1,0 +1,13 @@
+image: "python:3.6"
+
+before_script:
+  - python --version
+  - pip install -e .['test']
+
+stages:
+  - Test
+
+pytest:
+  stage: Test
+  script:
+  - python setup.py test
