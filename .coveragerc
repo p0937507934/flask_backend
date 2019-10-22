@@ -1,0 +1,6 @@
+[run]
+source = haoez_api_server
+branch = True
+
+[html]
+directory = test_reports/coverage
