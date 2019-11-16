@@ -19,10 +19,6 @@
         {
             "type":"ci",
             "section":"CI"
-        },
-        {
-            "type":"docs",
-            "section":"Document"
         }
     ]
 }
