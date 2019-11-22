@@ -3,7 +3,7 @@ import re
 
 from setuptools import setup
 
-install_requires = ["flask==1.1.1"]
+install_requires = ["flask==1.1.1", "requests==2.22.0"]
 dev_requires = ["black==19.3b0", "isort==4.3.21", "pylint==2.4.3"]
 test_requires = [
     "coverage==4.5.4",
