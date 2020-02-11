@@ -3,7 +3,16 @@ import re
 
 from setuptools import setup
 
-install_requires = ["flask==1.1.1", "requests==2.22.0"]
+install_requires = [
+    "flask==1.1.1",
+    "requests==2.22.0",
+    "flask_sqlalchemy==2.4.1",
+    "pymysql==0.9.3",
+    "sqlalchemy_utils==0.36.1",
+    "numpy==1.15.0",
+    "spectral==0.20",
+    "scikit-image==0.13.1"
+]
 dev_requires = ["black==19.3b0", "isort==4.3.21", "pylint==2.4.3"]
 test_requires = [
     "coverage==4.5.4",
