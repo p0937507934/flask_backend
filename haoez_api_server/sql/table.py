@@ -39,7 +39,6 @@ def hp280_keylist(metadata):
         metadata,
         Column("Hp280_data_id", Integer, primary_key=True, nullable=False),
         Column("Hp280_description", VARCHAR(100)),
-
         Column("Hp280_file_type", VARCHAR(10)),
         Column("Hp280_sensor_type", VARCHAR(10)),
         Column("Hp280_ihspt_version", VARCHAR(10)),

@@ -1,4 +1,4 @@
-import table
+import table_v1 as table
 import inspect
 from sqlalchemy import create_engine, MetaData
 from sqlalchemy_utils import database_exists, create_database
