@@ -45,7 +45,6 @@ def fx_keylist(metadata):
         "fx_keylist",
         metadata,
         Column("Fx_data_id", Integer, primary_key=True, nullable=False),
-        Column("Fx_series",Integer),
         Column("Group_id", Integer, ForeignKey("group.Group_id")),
         Column("Camera_id", Integer, ForeignKey("camera_type.Camera_id")),
         Column("File_id", Integer, ForeignKey("filename.File_id")),
