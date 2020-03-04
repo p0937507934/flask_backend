@@ -1,9 +1,9 @@
-def test_info(client):
+# def test_info(client):
 
-    url = "/"
-    resp = client.get(url)
+#     url = "/api"
+#     resp = client.get(url)
 
-    assert resp.status_code == 200
+#     assert resp.status_code == 200
 
 
 def test_file_post(client):
