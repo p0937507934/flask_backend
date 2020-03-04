@@ -16,8 +16,11 @@ def demo():
         s_d = request.files["sample_dark"]
 
         from haoez_api_server import demo
-
+        import time
+        print("Start classify")
+        sTime = time.time()
         img_path = demo.coffee(w, b, s, s_d)
+        print(time.time() - sTime, file=sys.stderr)
         return jsonify({"result": "ok!", "url": img_path})
     except Exception as e:
         print("Outer")
