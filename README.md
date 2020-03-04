@@ -21,3 +21,6 @@
 1. 以系統管理員身分執行`PowerShell`
 2. 執行 `Set-ExecutionPolicy RemoteSigned`
 3. Done!!
+
+## 產生Changelog
+`standard-version.cmd -r "version-tag"`
