@@ -19,7 +19,7 @@ gitab_mysql_service:
   image: alpine:latest
   services:
   - mariadb:latest
- script:
+  script:
    - apk --no-cache add mysql-client
    - mysql --version
    - sleep 20
