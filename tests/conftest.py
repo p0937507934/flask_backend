@@ -3,12 +3,10 @@ import sys
 
 import pytest
 
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)) + "/../")
-
 
 @pytest.fixture(scope="function")
 def app():
-    from haoez_api_server.api import app
+    from haoez_api_server import app
 
     return app
 

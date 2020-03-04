@@ -89,17 +89,58 @@ def calibration(w, b, s, s_d):
             np.fromstring(band.text, sep=",", dtype=float).reshape(5, 5)
         )
 
-    ref = np.zeros((216, 409, 24))
-    arr_width, arr_height = r.shape
-    for idx, filt in enumerate(coefficients):
-        filt_width, filt_height = filt.shape
-        for width in range(0, arr_width, filt_width):
-            for height in range(0, arr_height, filt_height):
-                arr_slice = r[width : width + filt_width, height : height + filt_height]
-                ref[int(width / filt_width), int(height / filt_height), idx] = np.sum(
-                    arr_slice * filt
-                )
-    return ref
+    # ref = np.zeros((216, 409, 24))
+    # arr_width, arr_height = r.shape
+    # for idx, filt in enumerate(coefficients):
+    #     filt_width, filt_height = filt.shape
+    #     for width in range(0, arr_width, filt_width):
+    #         for height in range(0, arr_height, filt_height):
+    #             arr_slice = r[width : width + filt_width, height : height + filt_height]
+    #             ref[int(width / filt_width), int(height / filt_height), idx] = np.sum(
+    #                 arr_slice * filt
+    #             )
+    return conv3(r, coefficients)
+
+
+def conv3(arr, filters):
+    result = np.zeros((216 * 409, 24))
+    for idx, filt in enumerate(filters):
+        filt = np.tile(filt, [216, 409])
+        result[:, idx] = im2col(arr * filt, 5, 5).sum(1)
+    return result.reshape((216, 409, 24))
+
+
+def im2col(input_data, filter_h, filter_w, stride=5):
+    """
+    Parameters
+    ----------
+    input_data : 由(資料量, 通道, 高, 長)的4維陣列構成的輸入資料
+    filter_h : 卷積核的高
+    filter_w : 卷積核的長
+    stride : 步幅
+    pad : 填充
+
+    Returns
+    -------
+    col : 2維陣列
+    """
+    # 輸入資料的形狀
+    # N：批數目，C：通道數，H：輸入資料高，W：輸入資料長
+    H, W = input_data.shape
+    out_h = (H - filter_h)//stride + 1  # 輸出資料的高
+    out_w = (W - filter_w)//stride + 1  # 輸出資料的長
+    # 填充 H,W
+    # (N, C, filter_h, filter_w, out_h, out_w)的0矩陣
+    col = np.zeros((1, 1, filter_h, filter_w, out_h, out_w))
+
+    for y in range(filter_h):
+        y_max = y + stride*out_h
+        for x in range(filter_w):
+            x_max = x + stride*out_w
+            col[:, :, y, x, :, :] = input_data[y:y_max:stride, x:x_max:stride]
+    # 按(0, 4, 5, 1, 2, 3)順序，交換col的列，然後改變形狀
+    col = col.transpose(0, 4, 5, 1, 2, 3).reshape(1*out_h*out_w, -1)
+    return col
 
 
 def Data_Normalization(input_data):
