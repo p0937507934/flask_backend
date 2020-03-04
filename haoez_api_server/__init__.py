@@ -7,6 +7,7 @@ app = Flask("haoez_api_server")
 app.config[
     "SQLALCHEMY_DATABASE_URI"
 ] = "mysql+pymysql://hsipl:211@140.125.45.162/haoez_db"
+app.config["SQLALCHEMY_POOL_TIMEOUT"] = 10
 app.config["DEBUG"] = True
 db = SQLAlchemy(app)
 
