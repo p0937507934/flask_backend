@@ -5,25 +5,7 @@ before_script:
   - pip install -e .['test']
 
 stages:
-  - run_jobs
   - Test
-  
-variables:
-  MYSQL_USER: hsipl
-  MYSQL_PASSWORD: 211
-  MYSQL_DATABASE: haoez_db
-  MYSQL_URL: 140.125.45.162:3306
-
-gitab_mysql_service:
-  stage: run_jobs
-  image: alpine:latest
-  services:
-  - mariadb:latest
-  script:
-   - apk --no-cache add mysql-client
-   - mysql --version
-   - sleep 20
-   - echo "SHOW tables;"| mysql -u "$MYSQL_USER" -p "$MYSQL_PASSWORD" -h "$MYSQL_URL" "$MYSQL_DATABASE"
 
 pytest:
   stage: Test
