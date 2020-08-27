@@ -20,6 +20,8 @@ def demo():
         print("Start classify")
         sTime = time.time()
         img_path = demo.coffee(w, b, s, s_d)
+        if img_path == "":
+            jsonify({"result": "bad!", "msg": "Classify falid!"})
         print(time.time() - sTime, file=sys.stderr)
         return jsonify({"result": "ok!", "url": img_path})
     except Exception as e:

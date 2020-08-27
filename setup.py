@@ -9,9 +9,10 @@ install_requires = [
     "flask_sqlalchemy==2.4.1",
     "pymysql==0.9.3",
     "sqlalchemy_utils==0.36.1",
-    "numpy==1.15.0",
+    "numpy==1.18.3",
     "spectral==0.20",
-    "scikit-image==0.13.1"
+    "scikit-image==0.17.2",
+    "padnas==1.0.3"
 ]
 dev_requires = ["black==19.3b0", "isort==4.3.21", "pylint==2.4.3"]
 test_requires = [

@@ -1,7 +1,11 @@
+import sys
 import numpy as np
 import spectral.io.envi as envi
-from skimage import filters
+from skimage import filters, measure
 import matplotlib.pyplot as plt
+import pickle
+from sklearn.svm import SVC
+import xml.etree.ElementTree as ET
 
 
 def coffee(w, b, s, s_d, ref_raw_path=None, ref_hdr_path=None):
@@ -15,131 +19,109 @@ def coffee(w, b, s, s_d, ref_raw_path=None, ref_hdr_path=None):
             ref = calibration(w, b, s, s_d)  # ref反射率
             filename = s.filename
 
-        bands_num = 5
-
-
-
-
-        a = np.load(
-            "./haoez_api_server/coffee_demo/data/hp280_bs.npz"
-        )  # load bdm bs 的結果 (未給波段選擇資料位置)
-        Bdm = a["bad_bs"]
-
         data_DN = Data_Normalization(ref).copy()  # 資料標準化
-        mask = data_DN[:, :, 10].copy()  # 取一個band 當mask9
+        mask = data_DN[:, :, 10].copy()  # 取一個band 當mask
+        
         mask[mask < 0.25] = 0  # 把底去掉
         mask[mask > 0] = 1  # 其他都為1
 
         for i in range(24):  # 濾雜質
             data_DN[:, :, i] = data_DN[:, :, i] * mask  # 濾雜質
 
-        bs_data = data_DN[:, :, Bdm[:bands_num, 0]].copy()  # 波段選擇後的結果
-
         x, y, _ = data_DN.shape
-
-        print(data_DN.shape)
 
         badim = np.zeros((x, y))
         non = np.nonzero(mask)  #  將非零值位置記錄下來
         HIM = []
-        HIM.append(bs_data[non[0], non[1]])
+        HIM.append(data_DN[non[0], non[1]])
         HIM = np.array(HIM)
 
-        d = np.load("./haoez_api_server/coffee_demo/data/hp280_D_fornew.npz")["D"]
-        d = d[Bdm[:bands_num, 0]].copy()
+        d = np.load("./haoez_api_server/coffee_demo/data/20200819_hp280_D.npz")["D"]
 
-        result = weight_Winner_Take_All_CEM(HIM, d)  # 感興趣點尚未給
+        result = weight_Winner_Take_All_CEM(HIM, d)  
         end = otsu(result, 2)
 
+        input1 = open("./haoez_api_server/coffee_demo/data/svm_model_0820.pkl", "rb")
+        svm = pickle.load(input1)
+        input1.close()
+
+        y_predict = svm.predict(end.T)
+
         for i in range(non[0].shape[0]):
-            badim[non[0][i], non[1][i]] = end[0, i]
+            badim[non[0][i], non[1][i]] = y_predict[i]
 
         img = badim + mask
-
         plt.imsave("./haoez_api_server/coffee_demo/result/" + filename + ".png", img)
+
+        # 處理成分類的圖
+        label_image = measure.label(img)
+        for region in measure.regionprops(label_image):
+            if region.area < 200:
+                continue
+            minr, minc, maxr, maxc = region.bbox
+            all_p = img[minr:maxr, minc:maxc].reshape(-1).shape[0]
+            bad_p = np.where(img[minr:maxr, minc:maxc] == 3)[0].shape[0] # CEM壞的要改2 SVM要改3 因為胖哥SVM label給1,2
+            bg_p = np.where(img[minr:maxr, minc:maxc] == 0)[0].shape[0]
+            bad_ratio = bad_p / (all_p - bg_p)
+            print(bad_ratio, all_p, bad_p, bg_p)
+            if bad_ratio > 0.03:  # 壞點容忍值
+                mask = np.where(img[minr:maxr, minc:maxc]!=0)
+                img[minr:maxr, minc:maxc][mask] = 2
+            else:
+                mask = np.where(img[minr:maxr, minc:maxc]!=0)
+                img[minr:maxr, minc:maxc][mask] = 1
+        plt.imsave("./haoez_api_server/coffee_demo/result/" + filename + "_classes.png", img)
         return filename + ".png"
     except Exception as e:
         print("demo")
-        print(e)
+        print(e, file=sys.stderr)
         return ""
 
 
-def read(array):
-    float_array = np.fromfile(array, dtype="i2")
-    return float_array
-
-
-import xml.etree.ElementTree as ET
-
-
 def calibration(w, b, s, s_d):
-    ss = read(s)
-    ww = read(w)
-    dd = read(b)
-    ss_dd = read(s_d)
-    r = ((ss - ss_dd) / ((ww - dd) + 1e-10)).reshape(1088, 2048)[8:, 3:]
+    _cali_xml = "./haoez_api_server/coffee_demo/data/CMV2K-SSM5x5-600_1000-5.6.17.9.xml"
+    _xml_data = ET.parse(_cali_xml)
 
-    xml = "./haoez_api_server/coffee_demo/data/CMV2K-SSM5x5-600_1000-5.6.17.9.xml"
-    data = ET.parse(xml)
-
-    virs = data.findall(".//virtual_band/coefficients")[24:]
+    _virs = _xml_data.findall(".//virtual_band/coefficients")[-24:]
     coefficients = []
-    for band in virs:
+    for band in _virs:
         coefficients.append(
             np.fromstring(band.text, sep=",", dtype=float).reshape(5, 5)
         )
 
-    # ref = np.zeros((216, 409, 24))
-    # arr_width, arr_height = r.shape
-    # for idx, filt in enumerate(coefficients):
-    #     filt_width, filt_height = filt.shape
-    #     for width in range(0, arr_width, filt_width):
-    #         for height in range(0, arr_height, filt_height):
-    #             arr_slice = r[width : width + filt_width, height : height + filt_height]
-    #             ref[int(width / filt_width), int(height / filt_height), idx] = np.sum(
-    #                 arr_slice * filt
-    #             )
-    return conv3(r, coefficients)
+    sample_spectral = read(s)
+    white_spectral = read(w)
+    dark_spectral = read(b)
+    sample_dark_spectral = read(s_d)
+    uncali_ref = (
+        (sample_spectral - dark_spectral) / (white_spectral - sample_dark_spectral)
+    ).reshape(1088, 2048)[3:-5, :2045]
 
-
-def conv3(arr, filters):
-    result = np.zeros((216 * 409, 24))
-    for idx, filt in enumerate(filters):
+    ref_result = np.zeros((216 * 409, 24))
+    for _idx, filt in enumerate(coefficients):
         filt = np.tile(filt, [216, 409])
-        result[:, idx] = im2col(arr * filt, 5, 5).sum(1)
-    return result.reshape((216, 409, 24))
+        ref_result[:, _idx] = im2col(filt * uncali_ref, 5, 5).sum(1)
+    return ref_result.reshape((216, 409, 24))
+
+
+def read(file, dtype="i2"):
+    unsigned_int_array = np.fromfile(file, dtype=dtype)
+    file.close()
+    return unsigned_int_array
 
 
 def im2col(input_data, filter_h, filter_w, stride=5):
-    """
-    Parameters
-    ----------
-    input_data : 由(資料量, 通道, 高, 長)的4維陣列構成的輸入資料
-    filter_h : 卷積核的高
-    filter_w : 卷積核的長
-    stride : 步幅
-    pad : 填充
-
-    Returns
-    -------
-    col : 2維陣列
-    """
-    # 輸入資料的形狀
-    # N：批數目，C：通道數，H：輸入資料高，W：輸入資料長
     H, W = input_data.shape
-    out_h = (H - filter_h)//stride + 1  # 輸出資料的高
-    out_w = (W - filter_w)//stride + 1  # 輸出資料的長
-    # 填充 H,W
-    # (N, C, filter_h, filter_w, out_h, out_w)的0矩陣
+    out_h = (H - filter_h) // stride + 1  # 輸出資料的高
+    out_w = (W - filter_w) // stride + 1  # 輸出資料的長
     col = np.zeros((1, 1, filter_h, filter_w, out_h, out_w))
 
     for y in range(filter_h):
-        y_max = y + stride*out_h
+        y_max = y + stride * out_h
         for x in range(filter_w):
-            x_max = x + stride*out_w
+            x_max = x + stride * out_w
             col[:, :, y, x, :, :] = input_data[y:y_max:stride, x:x_max:stride]
-    # 按(0, 4, 5, 1, 2, 3)順序，交換col的列，然後改變形狀
-    col = col.transpose(0, 4, 5, 1, 2, 3).reshape(1*out_h*out_w, -1)
+    col = col.transpose(0, 4, 5, 1, 2, 3).reshape(1 * out_h * out_w, -1)
     return col
 
 

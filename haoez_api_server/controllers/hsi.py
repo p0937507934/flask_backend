@@ -27,7 +27,7 @@ def hsi_list():
         return "<h1>Something is broken.</h1>"
 
 
-@hsi.route("/post", methods=["POST"])
+@hsi.route("", methods=["POST"])
 def hsi_file_post():
 
     try:
@@ -37,6 +37,7 @@ def hsi_file_post():
 
         camera_type = request.values["camera_type"]
         sample_name = request.values["sample_name"]
+
         res = f.filename
         filename_extension = res.split(".")
         if not filename_extension[1] == "npz":
@@ -65,10 +66,10 @@ def hsi_file_post():
         db.session.add(ins)
         db.session.commit()
         db.session.close()
-        return "file already upload"
+        return jsonify({"result": "Already upload"})
     except Exception as e:
         print(e, file=sys.stderr)
-        return e
+        return jsonify({"err": str(e)})
 
 
 @hsi.route("/<id>", methods=["GET"])
