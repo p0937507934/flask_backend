@@ -4,22 +4,23 @@ import sys
 
 from flask import Blueprint, jsonify, request, send_from_directory
 
-coffee = Blueprint("coffee", __name__, url_prefix="/coffee")
+classify = Blueprint("classify", __name__, url_prefix="/classify")
 
 
-@coffee.route("/classify", methods=["POST"])
-def demo():
+@classify.route("/<hsi_type>", methods=["POST"])
+def post_classify(hsi_type):
     try:
         w = request.files["white"]
         b = request.files["dark"]
         s = request.files["sample"]
         s_d = request.files["sample_dark"]
 
-        from haoez_api_server import demo
+        from haoez_api_server import methods
         import time
+
         print("Start classify")
         sTime = time.time()
-        img_path = demo.coffee(w, b, s, s_d)
+        img_path = getattr(methods, str(hsi_type))(w, b, s, s_d)
         if img_path == "":
             jsonify({"result": "bad!", "msg": "Classify falid!"})
         print(time.time() - sTime, file=sys.stderr)
@@ -30,24 +31,24 @@ def demo():
         return jsonify({"result": "bad!", "msg": str(e)})
 
 
-@coffee.route("/classify/ref", methods=["POST"])
-def demo_ref():
+@classify.route("/<hsi_type>/ref", methods=["POST"])
+def post_classify_ref(hsi_type):
     try:
         ref_hdr = request.files["ref_hdr"]
         ref_raw = request.files["ref_raw"]
 
-        ref_hdr.save("./haoez_api_server/coffee_demo/data/" + ref_hdr.filename)
-        ref_raw.save("./haoez_api_server/coffee_demo/data/" + ref_raw.filename)
+        ref_hdr.save("./haoez_api_server/classify_temp/data/" + ref_hdr.filename)
+        ref_raw.save("./haoez_api_server/classify_temp/data/" + ref_raw.filename)
 
-        from haoez_api_server import demo
+        from haoez_api_server import methods
 
-        img_path = demo.coffee(
+        img_path = getattr(methods, str(hsi_type))(
             None,
             None,
             None,
             None,
-            ref_raw_path="./haoez_api_server/coffee_demo/data/" + ref_raw.filename,
-            ref_hdr_path="./haoez_api_server/coffee_demo/data/" + ref_hdr.filename,
+            ref_raw_path="./haoez_api_server/classify_temp/data/" + ref_raw.filename,
+            ref_hdr_path="./haoez_api_server/classify_temp/data/" + ref_hdr.filename,
         )
         return jsonify({"result": "ok!", "url": img_path})
     except Exception as e:
@@ -55,8 +56,8 @@ def demo_ref():
         return jsonify({"result": "bad!", "msg": str(e)})
 
 
-@coffee.route("/result", methods=["GET"])
-def coffee_result():
+@classify.route("/result", methods=["GET"])
+def get_result():
     filename = request.args.get("filename")
     print(filename, file=sys.stderr)
-    return send_from_directory("./coffee_demo/result/", filename)
+    return send_from_directory("./classify_temp/result/", filename)

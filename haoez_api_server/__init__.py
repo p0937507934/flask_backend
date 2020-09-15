@@ -20,9 +20,9 @@ from haoez_api_server.controllers.hsi import hsi
 
 app.register_blueprint(hsi)
 
-from haoez_api_server.controllers.coffee import coffee
+from haoez_api_server.controllers.classify import classify
 
-app.register_blueprint(coffee)
+app.register_blueprint(classify)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5050)
