@@ -12,7 +12,7 @@ install_requires = [
     "numpy==1.18.3",
     "spectral==0.20",
     "scikit-image==0.17.2",
-    "padnas==1.0.3"
+    "pandas==1.0.3"
 ]
 dev_requires = ["black==19.3b0", "isort==4.3.21", "pylint==2.4.3"]
 test_requires = [

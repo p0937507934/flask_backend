@@ -1,12 +1,15 @@
 # haoez_api_server
 
 ## 初次使用
-### 1. 使用virtualenv建立虛擬環境
+### 1. 建立虛擬環境
+##### 使用virtualenv
 * 安裝: `pip install virtualenv`
 * 建立: `virtualenv env`
+##### 使用venv
+* 建立： `python -m venv env`
 ### 2. 安裝Dependency
-* For usr: `pip install .`
-* For dev: `pip install -e .["dev"]`
+* For user： `pip install .`
+* For dev： `pip install -e .["dev"]`
 
 ## 上傳前準備
 * 分支要在`feat`
