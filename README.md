@@ -12,11 +12,12 @@
 
 :exclamation: 各平台測試狀況
 
-| OS/版本    | Python版本  | 運行狀況           |
-| -         | -          | -                  |
-| Win10/x64 | 3.7.9      | :white_check_mark: |
-| Win7/X64  | 3.7.9      | :white_check_mark: |
-| Ubuntu/?  | ?          | :x: #1             |
+| OS/版本           | Python版本 | 運行狀況           | 備註  |
+| -                | -          | -                  | -    |
+| Win10/x64        | 3.7.9      | :white_check_mark: |      |
+| Win7/X64         | 3.7.9      | :white_check_mark: |      |
+| Linux/gitlab-ci  | 3.6.12     | :white_check_mark: |      |
+| Ubuntu/?         | ?          | :x:                | #1   |
 
 ## 目錄拉
 [[_TOC_]]
@@ -66,7 +67,7 @@ $ python .\\haoez_api_server\\__init__.py
 * :exclamation: 分支要在`feat`
 * Commit的格式**盡量**遵照[Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)標準
     * 訊息格式
-        > [標籤] 訊息
+        > 標籤: 訊息
     * 支援的`標籤`請參考`.versionrc`
     * 之前沒遵守的我會想辦法修掉...
 * 推到`feat`之後送MR給`master`
