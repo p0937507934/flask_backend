@@ -19,6 +19,14 @@
         {
             "type":"ci",
             "section":"CI"
+        },
+        {
+            "type":"fix",
+            "section":"Bug Fixes"
+        },
+        {
+            "type":"docs",
+            "section":"Docs improves"
         }
     ]
 }
