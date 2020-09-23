@@ -51,7 +51,7 @@ $ .\\env\\Scripts\\activate.bat
 3. 安裝Dependency
 ```bash
 # For 部屬環境：
-(env) $ pip install .
+(env) $ pip install -e .
 
 # For 開發者：
 (env) $ pip install -e .["dev"]
@@ -76,3 +76,5 @@ $ python .\\haoez_api_server\\__init__.py
 ## TODO List
 - [ ] 單點的辨識整合進來
 - [ ] CI測試修好
+
+## 有Bug直接丟Issues
