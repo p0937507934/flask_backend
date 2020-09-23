@@ -12,11 +12,12 @@
 
 :exclamation: 各平台測試狀況
 
-| OS/版本    | Python版本  | 運行狀況           |
-| -         | -          | -                  |
-| Win10/x64 | 3.7.9      | :white_check_mark: |
-| Win7/X64  | 3.7.9      | :white_check_mark: |
-| Ubuntu/?  | ?          | :x: #1             |
+| OS/版本           | Python版本 | 運行狀況           | 備註  |
+| -                | -          | -                  | -    |
+| Win10/x64        | 3.7.9      | :white_check_mark: |      |
+| Win7/X64         | 3.7.9      | :white_check_mark: |      |
+| Linux/gitlab-ci  | 3.6.12     | :white_check_mark: |      |
+| Ubuntu/?         | ?          | :x:                | #1   |
 
 ## 目錄拉
 [[_TOC_]]
