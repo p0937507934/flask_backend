@@ -1,5 +1,5 @@
 # haoez_api_server
-
+[![pipeline status](https://gitlab.com/nyust-hsipl/cooperation-project/isuzu-optics/haoez_api_server/badges/master/pipeline.svg)](https://gitlab.com/nyust-hsipl/cooperation-project/isuzu-optics/haoez_api_server/-/commits/master)
 :star: 此為與五鈴光學合作之高光譜演算法雲端辨識伺服器
 
 :bulb: 目前支援辨識的儀器
@@ -12,7 +12,7 @@
 
 :exclamation: 各平台測試狀況
 
-| OS/版本           | Python版本 | 運行狀況           | 備註  |
+| OS/版本          | Python版本  | 運行狀況           | 備註  |
 | -                | -          | -                  | -    |
 | Win10/x64        | 3.7.9      | :white_check_mark: |      |
 | Win7/X64         | 3.7.9      | :white_check_mark: |      |
@@ -60,22 +60,19 @@ $ .\\env\\Scripts\\activate.bat
 
 4. 啟動Server
 ```bash
-$ python .\\haoez_api_server\\__init__.py
+(env) $ python .\\haoez_api_server\\__init__.py
 ```
 
 ## Push前準備
-* :exclamation: 分支要在`feat`
+* :exclamation: 分支不要在`master`請另開分支，新分支的名稱不要無意義就好
 * Commit的格式**盡量**遵照[Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)標準
     * 訊息格式
         > 標籤: 訊息
     * 支援的`標籤`請參考`.versionrc`
     * 之前沒遵守的我會想辦法修掉...
-* 推到`feat`之後送MR給`master`
+* 推到其他分支之後送 MR 給`master`，然後訊息跟我說一下
 
 > :bulb: 遵照`Conventional Commits`其實是為了產生`CHANGELOG.md`，相關說明可以看[這裡](https://linyencheng.github.io/2020/04/25/tool-semantic-version-release/)
 
-## TODO List
-- [ ] 單點的辨識整合進來
-- [ ] CI測試修好
-
-## 有Bug直接丟Issues
+## 有新Feature直接更新Issue的TODO
+## 有Bug直接開新的Issue
