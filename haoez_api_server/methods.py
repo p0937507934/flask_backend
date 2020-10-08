@@ -1,11 +1,16 @@
 import sys
+
+import matplotlib
 import numpy as np
 import spectral.io.envi as envi
 from skimage import filters, measure, segmentation
-import matplotlib.pyplot as plt
+
+matplotlib.use("Agg")
 import pickle
-from sklearn.svm import SVC
 import xml.etree.ElementTree as ET
+
+import matplotlib.pyplot as plt
+from sklearn.svm import SVC
 
 
 def peanut(w, b, s, s_d, ref_raw_path=None, ref_hdr_path=None):
@@ -46,7 +51,6 @@ def peanut(w, b, s, s_d, ref_raw_path=None, ref_hdr_path=None):
         """對連續的像素標號(label)"""
         img_result = segmentation.clear_border(img_result)
         label_image = measure.label(img_result)
-
         """平均每顆花生的光譜訊號"""
         im_2d = np.reshape(ref, [-1, ref.shape[2]])
         label_2d = np.reshape(label_image, -1)
@@ -69,7 +73,6 @@ def peanut(w, b, s, s_d, ref_raw_path=None, ref_hdr_path=None):
                 arr_peanuts[i] = arr_peanuts[i] / np.count_nonzero(label_image == i)
 
         arr_peanuts = np.delete(arr_peanuts, no_ls, axis=0)  # 刪除非花生的列
-
         """用svm預測，米色為好，洋紅色為壞"""
         y_hat = svm.predict(arr_peanuts)
         label_copy = label_image.copy()
@@ -81,16 +84,11 @@ def peanut(w, b, s, s_d, ref_raw_path=None, ref_hdr_path=None):
                 label_copy[label_image == value] = 100  # 100是洋紅色
 
         label_copy[0, 0] = 200
-
-        plt.imsave(
-            "./haoez_api_server/classify_temp/result/" + filename + "_classes.png",
-            label_copy,
-            cmap="magma",
-        )
+        savefig(label_copy, filename + "_classes", cmap="magma")
         return filename + "_classes.png"
     except Exception as e:
-        print("peanut", e, file=sys.stderr)
-        return ""
+        print("peanut err, ", e, file=sys.stderr)
+        raise Exception(e)
 
 
 def coffee(w, b, s, s_d, ref_raw_path=None, ref_hdr_path=None):
@@ -140,7 +138,7 @@ def coffee(w, b, s, s_d, ref_raw_path=None, ref_hdr_path=None):
             badim[non[0][i], non[1][i]] = y_predict[i]
 
         img = badim + mask
-        plt.imsave("./haoez_api_server/classify_temp/result/" + filename + ".png", img)
+        savefig(img, filename)
 
         # 處理成分類的圖
         label_image = measure.label(img)
@@ -161,13 +159,11 @@ def coffee(w, b, s, s_d, ref_raw_path=None, ref_hdr_path=None):
             else:
                 mask = np.where(img[minr:maxr, minc:maxc] != 0)
                 img[minr:maxr, minc:maxc][mask] = 1
-        plt.imsave(
-            "./haoez_api_server/classify_temp/result/" + filename + "_classes.png", img
-        )
+        savefig(img, filename + "_classes")
         return filename + ".png"
     except Exception as e:
-        print("coffee", e, file=sys.stderr)
-        return ""
+        print("coffee err, ", e, file=sys.stderr)
+        raise Exception(e)
 
 
 def calibration(w, b, s, s_d):
@@ -296,3 +292,16 @@ def otsu(HIM, c):
         him[him <= val] = 0
         him[him > val] = 1
     return him
+
+
+def savefig(image, filename, dpi=150, **kwargs):
+    plt.ioff()
+    plt.axis("off")
+    plt.imshow(image, **kwargs)
+    plt.savefig(
+        "./haoez_api_server/classify_temp/result/" + filename + ".png",
+        dpi=dpi,
+        bbox_inches="tight",
+        pad_inches=0.0,
+    )
+
