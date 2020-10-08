@@ -6,7 +6,7 @@ from setuptools import setup
 install_requires = [
     "flask==1.1.1",
     "numpy==1.18.3",
-    "spectral==0.20",
+    "spectral",
     "scikit-image==0.17.2",
     "pandas==1.0.3",
     "scikit-learn==0.19.2"
