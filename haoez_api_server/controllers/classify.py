@@ -6,6 +6,12 @@ from flask import Blueprint, jsonify, request, send_from_directory
 
 classify = Blueprint("classify", __name__, url_prefix="/classify")
 
+# 檢查放光譜資料的資料夾
+tmp_path = "./haoez_api_server/classify_temp"
+if not os.path.exists(tmp_path):
+    os.makedirs(tmp_path + "/data")
+    os.makedirs(tmp_path + "/result")
+
 
 @classify.route("/<hsi_type>", methods=["POST"])
 def post_classify(hsi_type):
