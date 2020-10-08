@@ -14,10 +14,10 @@ def test_classify_raw(client):
         url = "/classify/" + test_methods[idx]
 
         data = dict(
-            white=(open("./tests/data/WHITE.RAW", "rb"), "WHITE.RAW"),
-            dark=(open("./tests/data/RDARK.RAW", "rb"), "RDARK.RAW"),
-            sample=(open("./tests/data/HPCCD.RAW", "rb"), "HPCCD.RAW"),
-            sample_dark=(open("./tests/data/SDARK.RAW", "rb"), "SDARK.RAW"),
+            white=(open("./tests/test_data/WHITE.RAW", "rb"), "WHITE.RAW"),
+            dark=(open("./tests/test_data/RDARK.RAW", "rb"), "RDARK.RAW"),
+            sample=(open("./tests/test_data/HPCCD.RAW", "rb"), "HPCCD.RAW"),
+            sample_dark=(open("./tests/test_data/SDARK.RAW", "rb"), "SDARK.RAW"),
         )
 
         resp = client.post(url, content_type="multipart/form-data", data=data)
@@ -38,8 +38,8 @@ def test_classify_ref(client):
         url = "/classify/" + test_methods[idx] + "/ref"
 
         data = dict(
-            ref_raw=(open("./tests/data/1_RT_New.raw", "rb"), "1_RT_New.raw"),
-            ref_hdr=(open("./tests/data/1_RT_New.hdr", "rb"), "1_RT_New.hdr"),
+            ref_raw=(open("./tests/test_data/1_RT_New.raw", "rb"), "1_RT_New.raw"),
+            ref_hdr=(open("./tests/test_data/1_RT_New.hdr", "rb"), "1_RT_New.hdr"),
         )
 
         resp = client.post(url, content_type="multipart/form-data", data=data)
