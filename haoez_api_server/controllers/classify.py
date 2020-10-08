@@ -6,6 +6,12 @@ from flask import Blueprint, jsonify, request, send_from_directory
 
 classify = Blueprint("classify", __name__, url_prefix="/classify")
 
+# 檢查放光譜資料的資料夾
+tmp_path = "./haoez_api_server/classify_temp"
+if not os.path.exists(tmp_path):
+    os.makedirs(tmp_path + "/data")
+    os.makedirs(tmp_path + "/result")
+
 
 @classify.route("/<hsi_type>", methods=["POST"])
 def post_classify(hsi_type):
@@ -21,14 +27,12 @@ def post_classify(hsi_type):
         print("Start classify")
         sTime = time.time()
         img_path = getattr(methods, str(hsi_type))(w, b, s, s_d)
-        if img_path == "":
-            jsonify({"result": "bad!", "msg": "Classify falid!"})
         print(time.time() - sTime, file=sys.stderr)
         return jsonify({"result": "ok!", "url": img_path})
     except Exception as e:
         print("Outer")
         print(e, file=sys.stderr)
-        return jsonify({"result": "bad!", "msg": str(e)})
+        return jsonify({"result": "bad!", "msg": str(e)}), 400
 
 
 @classify.route("/<hsi_type>/ref", methods=["POST"])
@@ -53,7 +57,7 @@ def post_classify_ref(hsi_type):
         return jsonify({"result": "ok!", "url": img_path})
     except Exception as e:
         print(e, file=sys.stderr)
-        return jsonify({"result": "bad!", "msg": str(e)})
+        return jsonify({"result": "bad!", "msg": str(e)}), 400
 
 
 @classify.route("/result", methods=["GET"])

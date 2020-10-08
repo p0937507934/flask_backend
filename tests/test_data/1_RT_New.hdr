@@ -1,0 +1,53 @@
+ENVI
+description = {
+}
+file type = ENVI
+sensor type = 
+ihspt version = 2.5.7
+interleave = bil
+samples = 409
+lines = 216
+bands = 24
+default bands = { 18, 12, 6}
+header offset = 0
+data type = 4
+byte order = 0
+x start = 0
+y start = 0
+max value = 511
+fps = 0.00
+tint = 5.00
+acquisition time = 20170216T035031.946852
+index = 5950
+nr_frames = 1
+nr_frames_lost = 0
+nr_frames_lost_sw = 0
+exposure(ms) = 7.00000
+
+Wavelength = {
+690.690071,
+716.025321,
+730.123009,
+742.114598,
+756.809303,
+768.763424,
+782.056234,
+793.627351,
+805.883141,
+824.692808,
+836.271283,
+846.592493,
+857.350196,
+867.374663,
+877.559352,
+886.458129,
+895.580078,
+910.314380,
+918.278065,
+926.832386,
+932.904189,
+940.464418,
+947.079779,
+953.270313
+}
+;No fwhm information available.

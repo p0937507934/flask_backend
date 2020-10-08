@@ -1,5 +1,6 @@
 # haoez_api_server
-[![pipeline status](https://gitlab.com/nyust-hsipl/cooperation-project/isuzu-optics/haoez_api_server/badges/master/pipeline.svg)](https://gitlab.com/nyust-hsipl/cooperation-project/isuzu-optics/haoez_api_server/-/commits/master)
+[![pipeline status](https://gitlab.com/nyust-hsipl/cooperation-project/isuzu-optics/haoez_api_server/badges/master/pipeline.svg)](https://gitlab.com/nyust-hsipl/cooperation-project/isuzu-optics/haoez_api_server/-/commits/master) [![coverage report](https://gitlab.com/nyust-hsipl/cooperation-project/isuzu-optics/haoez_api_server/badges/master/coverage.svg)](https://gitlab.com/nyust-hsipl/cooperation-project/isuzu-optics/haoez_api_server/-/commits/master)
+
 :star: 此為與五鈴光學合作之高光譜演算法雲端辨識伺服器
 
 :bulb: 目前支援辨識的儀器
